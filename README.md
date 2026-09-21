@@ -289,28 +289,30 @@ powershell -ExecutionPolicy Bypass -File .tools\dust_tool_test.ps1          # �
 
 新增工具后可以用它们快速确认"新工具是否自动出现在首页"。
 
-### 本机 git（免安装版）
+### git 与远程仓库
 
-本机没有安装 git（PATH 与常见安装位置均无），项目自带官方免安装版，不需要管理员权限、不写注册表、不改 PATH：
+本机已安装系统级 Git（`C:\Program Files\Git`，版本 2.55.0.5），已写入系统 PATH，**新开的终端可直接使用 `git`**：
 
 ```powershell
-# 位置
-.tools\portablegit\cmd\git.exe
+git --version          # git version 2.55.0.windows.5
+git log --oneline
+git status
+```
 
-# 日常使用（在项目根目录）
-& .tools\portablegit\cmd\git.exe status
-& .tools\portablegit\cmd\git.exe log --oneline
+远程仓库：`git@github.com:YueXiuuuuu/MhxyTool.git`（`origin`），默认分支 `main`，已配置上游，直接 `git push` 即可。
 
-# 换一台机器时重新获取（从 git-for-windows 官方 release 下载并解压到 .tools\portablegit）
+认证走 SSH 密钥 `%USERPROFILE%\.ssh\id_ed25519`（该私钥未设密码短语，见下），无需每次输入账号密码。
+
+提交身份（全局配置，本仓库另有相同的仓库级配置）：
+
+```powershell
+git config --global user.name    # 7148709
+git config --global user.email   # 7148709@qq.com
+```
+
+**另一台没有装 git 的机器**可以用仓库里的脚本获取官方免安装版（不写注册表、不改 PATH）：
+
+```powershell
 powershell -ExecutionPolicy Bypass -File .tools\install_portablegit.ps1
+# 之后用 .tools\portablegit\cmd\git.exe 代替 git
 ```
-
-仓库内的提交身份是本仓库独立配置（`git config user.name / user.email`），不改全局设置。
-要改成自己的名字与邮箱：
-
-```powershell
-& .tools\portablegit\cmd\git.exe config user.name "你的名字"
-& .tools\portablegit\cmd\git.exe config user.email "你的邮箱"
-```
-
-想在任何终端里直接用 `git` 命令，把 `.tools\portablegit\cmd` 加进系统 PATH 即可。
