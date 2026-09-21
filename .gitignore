@@ -1,0 +1,15 @@
+# 构建产物
+bin/
+obj/
+publish/
+
+# IDE
+.vs/
+*.user
+
+# 免安装版 git（仅本机开发用，不属于源码）
+.tools/portablegit/
+.tools/PortableGit-installer.exe
+
+# 验证脚本产生的截图
+.tools/*.png

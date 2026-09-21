@@ -1,0 +1,10 @@
+# 统一换行符处理，避免 Windows/Linux 协作时产生无意义的整文件差异
+* text=auto
+
+# 明确二进制文件，避免被当作文本处理
+*.png binary
+*.jpg binary
+*.ico binary
+*.exe binary
+*.dll binary
+*.7z binary

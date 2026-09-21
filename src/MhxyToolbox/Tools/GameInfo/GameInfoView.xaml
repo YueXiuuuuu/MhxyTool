@@ -1,0 +1,64 @@
+<core:ToolPageBase x:Class="MhxyToolbox.Tools.GameInfo.GameInfoView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:core="clr-namespace:MhxyToolbox.Core.Navigation">
+
+    <Grid Margin="28,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 页头 + 搜索 -->
+        <Grid Grid.Row="0">
+            <StackPanel>
+                <TextBlock Text="游戏资料查询" FontSize="20" FontWeight="Bold"/>
+                <TextBlock Text="输入关键词（名称 / 类型 / 关键词）过滤下方列表。"
+                           FontSize="12" Margin="0,5,0,0"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+            </StackPanel>
+            <TextBox x:Name="SearchBox" Width="260" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                     Style="{StaticResource SearchBoxStyle}"
+                     TextChanged="OnSearchTextChanged"/>
+        </Grid>
+
+        <!-- 列表 + 详情 -->
+        <Grid Grid.Row="1" Margin="0,16,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ListBox x:Name="EntryList" Grid.Column="0"
+                     Style="{StaticResource NavListBoxStyle}"
+                     SelectionChanged="OnEntrySelected">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" FontSize="13" VerticalAlignment="Center"/>
+                            <Border CornerRadius="4" Padding="6,1" Margin="10,0,0,0"
+                                    Background="{StaticResource GoldFaintBrush}" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Type}" FontSize="10" Foreground="{StaticResource GoldDimBrush}"/>
+                            </Border>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Border Grid.Column="1" Margin="16,0,0,0" Padding="20" CornerRadius="10"
+                    Background="{StaticResource CardBgBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock x:Name="EntryTitle" Text="—" FontSize="18" FontWeight="Bold"/>
+                    <Border CornerRadius="4" Padding="8,2" HorizontalAlignment="Left" Margin="0,8,0,0"
+                            Background="{StaticResource GoldFaintBrush}">
+                        <TextBlock x:Name="EntryType" Text="—" FontSize="11" Foreground="{StaticResource GoldDimBrush}"/>
+                    </Border>
+                    <TextBlock x:Name="EntryDesc" Text="选择左侧条目查看详情。"
+                               FontSize="13" Margin="0,14,0,0" TextWrapping="Wrap"
+                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</core:ToolPageBase>

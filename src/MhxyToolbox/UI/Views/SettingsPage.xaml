@@ -1,0 +1,77 @@
+<UserControl x:Class="MhxyToolbox.UI.Views.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:MhxyToolbox.UI.ViewModels"
+             xmlns:core="clr-namespace:MhxyToolbox.Core.Tools">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="28,26,28,28" MaxWidth="760" HorizontalAlignment="Left">
+
+            <!-- 关于 -->
+            <TextBlock Text="关于" Style="{StaticResource SectionHeaderText}"/>
+            <Border Margin="0,12,0,0" Padding="18" CornerRadius="10"
+                    Background="{StaticResource CardBgBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="梦幻工具箱" FontSize="17" FontWeight="Bold" Foreground="{StaticResource GoldBrush}"/>
+                    <TextBlock Margin="0,6,0,0" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
+                               Text="一个可以持续添加《梦幻西游》工具的桌面工具平台。所有工具通过实现 ITool 接口自动注册，首页自动分类展示，不修改游戏客户端。"/>
+                    <TextBlock Margin="0,10,0,0" FontSize="12"
+                               Foreground="{StaticResource TextSecondaryBrush}">
+                        <Run Text="已注册工具："/><Run Text="{Binding ToolCount, Mode=OneWay}" FontWeight="Bold"
+                            Foreground="{StaticResource GoldBrightBrush}"/><Run Text=" 个"/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- 工具注册表 -->
+            <TextBlock Text="工具注册表" Style="{StaticResource SectionHeaderText}" Margin="0,22,0,0"/>
+            <Border Margin="0,12,0,0" Padding="6" CornerRadius="10"
+                    Background="{StaticResource CardBgBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                <ItemsControl ItemsSource="{Binding AllTools}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type core:ToolDefinition}">
+                            <Grid Margin="12,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="36"/>
+                                    <ColumnDefinition Width="170"/>
+                                    <ColumnDefinition Width="130"/>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="{Binding Icon}" FontSize="16" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="13" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" Text="{Binding Category}" FontSize="12" VerticalAlignment="Center"
+                                           Foreground="{StaticResource GoldDimBrush}"/>
+                                <TextBlock Grid.Column="3" Text="{Binding Version}" FontSize="11" VerticalAlignment="Center"
+                                           Foreground="{StaticResource TextTertiaryBrush}"/>
+                                <TextBlock Grid.Column="4" Text="{Binding Description}" FontSize="11" VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"
+                                           Foreground="{StaticResource TextSecondaryBrush}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+
+            <!-- 存储 -->
+            <TextBlock Text="存储" Style="{StaticResource SectionHeaderText}" Margin="0,22,0,0"/>
+            <Border Margin="0,12,0,0" Padding="18" CornerRadius="10"
+                    Background="{StaticResource CardBgBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="收藏 / 禁用状态保存在以下配置文件中：" FontSize="12"
+                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                    <TextBlock Text="{Binding SettingsPath}" FontSize="12" Margin="0,6,0,0"
+                               Foreground="{StaticResource GoldBrightBrush}"/>
+                    <TextBlock Text="后续的全局设置（主题、窗口状态、各工具参数）都会扩展到此处。"
+                               FontSize="11" Margin="0,8,0,0"
+                               Foreground="{StaticResource TextTertiaryBrush}"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

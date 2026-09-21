@@ -1,0 +1,206 @@
+<core:ToolPageBase x:Class="MhxyToolbox.Tools.FiveColorDust.FiveColorDustView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:core="clr-namespace:MhxyToolbox.Core.Navigation">
+
+    <core:ToolPageBase.Resources>
+        <!-- 成本列在下拉/输入时的着色 -->
+        <Style x:Key="TableHeaderText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="TableNumberText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Margin" Value="0,0,14,0"/>
+        </Style>
+        <Style x:Key="CostText" TargetType="TextBlock" BasedOn="{StaticResource TableNumberText}">
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        </Style>
+        <Style x:Key="CostGoldText" TargetType="TextBlock" BasedOn="{StaticResource TableNumberText}">
+            <Setter Property="Foreground" Value="{StaticResource GoldBrightBrush}"/>
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        </Style>
+    </core:ToolPageBase.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <StackPanel Margin="28,20,28,28" MaxWidth="1000" HorizontalAlignment="Left">
+
+            <!-- ============ 页头 ============ -->
+            <TextBlock Text="五色灵尘计算器" FontSize="20" FontWeight="Bold"/>
+            <TextBlock Text="按合成规则自动推算 1~10 级所需材料，并按单价与金价折算成本。"
+                       FontSize="12" Margin="0,6,0,0"
+                       Foreground="{StaticResource TextSecondaryBrush}"/>
+
+            <!-- ============ 参数输入 ============ -->
+            <Border Margin="0,18,0,0" Padding="20,18" CornerRadius="10"
+                    Background="{StaticResource CardBgBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 一级灵尘单价 -->
+                    <StackPanel Grid.Column="0" Margin="0,0,24,0">
+                        <TextBlock Text="一级五色灵尘单价（单位：万）" Style="{StaticResource FieldLabel}"/>
+                        <TextBox Width="220" HorizontalAlignment="Left" Margin="0,6,0,0"
+                                 Style="{StaticResource ModernTextBox}"
+                                 Text="{Binding UnitPriceText, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="{Binding UnitPriceHint}" FontSize="11" Margin="0,5,0,0"
+                                   Foreground="{StaticResource ErrorBrush}"
+                                   Visibility="{Binding HasUnitPriceError, Converter={StaticResource BoolToVis}}"/>
+                        <TextBlock Text="既是合成材料成本，也是 1 级灵尘的市价。" FontSize="11" Margin="0,5,0,0"
+                                   Foreground="{StaticResource TextTertiaryBrush}"/>
+                    </StackPanel>
+
+                    <!-- 金价 -->
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="金价：3000 万梦幻币折合人民币（单位：元）" Style="{StaticResource FieldLabel}"/>
+                        <TextBox Width="220" HorizontalAlignment="Left" Margin="0,6,0,0"
+                                 Style="{StaticResource ModernTextBox}"
+                                 Text="{Binding GoldPriceText, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="{Binding GoldPriceHint}" FontSize="11" Margin="0,5,0,0"
+                                   Foreground="{StaticResource ErrorBrush}"
+                                   Visibility="{Binding HasGoldPriceError, Converter={StaticResource BoolToVis}}"/>
+                        <TextBlock Text="用于把梦幻币成本换算成人民币成本。" FontSize="11" Margin="0,5,0,0"
+                                   Foreground="{StaticResource TextTertiaryBrush}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- ============ 合成规则 ============ -->
+            <Border Margin="0,14,0,0" Padding="20,16" CornerRadius="10"
+                    Background="{StaticResource CardBgBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="合成规则" FontSize="13" FontWeight="SemiBold"/>
+                    <TextBlock Margin="0,8,0,0" FontSize="12" TextWrapping="Wrap"
+                               Foreground="{StaticResource TextSecondaryBrush}">
+                        <Run Text="1 级 = 1 个一级灵尘　　2 级 = 2 个一级灵尘　　3 级及以上："/>
+                        <Run Text="N 级 = 2 个 (N-1) 级 + 1 个 (N-2) 级" Foreground="{StaticResource GoldBrightBrush}"/>
+                    </TextBlock>
+                    <TextBlock Margin="0,6,0,0" FontSize="12" TextWrapping="Wrap"
+                               Foreground="{StaticResource TextTertiaryBrush}"
+                               Text="由此递推：合成 1 个 N 级所需一级灵尘数量为 1, 2, 5, 12, 29, 70, 169, 408, 985, 2378 …（Q(N) = 2×Q(N-1) + Q(N-2)）"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ============ 明细表 ============ -->
+            <Border Margin="0,14,0,0" Padding="20,16" CornerRadius="10"
+                    Background="{StaticResource CardBgBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="1~10 级消耗与成本" FontSize="13" FontWeight="SemiBold"/>
+                    <TextBlock Margin="0,6,0,0" FontSize="11" TextWrapping="Wrap"
+                               Foreground="{StaticResource TextTertiaryBrush}"
+                               Text="单级成本 = 所需一级灵尘数 × 单价；综合成本 = 累计数量（1 级到该级之和）× 单价。表格中「万」指万梦幻币，「元」指人民币。"/>
+                    <TextBlock Margin="0,3,0,0" FontSize="11" TextWrapping="Wrap"
+                               Foreground="{StaticResource TextTertiaryBrush}"
+                               Text="数量无需输入即可算出；输入单价显示梦幻币成本，再输入金价显示人民币成本。"/>
+
+                    <!-- 表头：列宽必须与下方数据行一致（合计 670，适配默认窗口宽度） -->
+                    <Grid Height="34" Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="105"/>
+                            <ColumnDefinition Width="105"/>
+                            <ColumnDefinition Width="105"/>
+                            <ColumnDefinition Width="105"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="等级" Style="{StaticResource TableHeaderText}"/>
+                        <TextBlock Grid.Column="1" Text="需1级灵尘" Style="{StaticResource TableHeaderText}"/>
+                        <TextBlock Grid.Column="2" Text="累计数量" Style="{StaticResource TableHeaderText}"/>
+                        <TextBlock Grid.Column="3" Text="单级成本(万)" Style="{StaticResource TableHeaderText}"/>
+                        <TextBlock Grid.Column="4" Text="综合成本(万)" Style="{StaticResource TableHeaderText}"/>
+                        <TextBlock Grid.Column="5" Text="单级成本(元)" Style="{StaticResource TableHeaderText}"/>
+                        <TextBlock Grid.Column="6" Text="综合成本(元)" Style="{StaticResource TableHeaderText}"/>
+                    </Grid>
+                    <Border Height="1" Background="{StaticResource SeparatorBrush}"/>
+
+                    <ItemsControl ItemsSource="{Binding Rows}" Margin="0,2,0,0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!-- 列宽必须与表头一致 -->
+                                <Grid Height="32">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="90"/>
+                                        <ColumnDefinition Width="105"/>
+                                        <ColumnDefinition Width="105"/>
+                                        <ColumnDefinition Width="105"/>
+                                        <ColumnDefinition Width="105"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsAlternate}" Value="True">
+                                                    <Setter Property="Background" Value="#12FFFFFF"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <TextBlock Grid.Column="0" Text="{Binding LevelText}" FontSize="13"
+                                               FontWeight="SemiBold" VerticalAlignment="Center"
+                                               Foreground="{StaticResource GoldBrush}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding LevelOneText}"
+                                               Style="{StaticResource TableNumberText}"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding TotalQuantityText}"
+                                               Style="{StaticResource TableNumberText}"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding UnitCostWanText}"
+                                               Style="{StaticResource CostGoldText}"/>
+                                    <TextBlock Grid.Column="4" Text="{Binding TotalCostWanText}"
+                                               Style="{StaticResource CostGoldText}"/>
+                                    <TextBlock Grid.Column="5" Text="{Binding UnitCostRmbText}"
+                                               Style="{StaticResource CostText}"/>
+                                    <TextBlock Grid.Column="6" Text="{Binding TotalCostRmbText}"
+                                               Style="{StaticResource CostText}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- ============ 汇总 ============ -->
+            <Border Margin="0,14,0,0" Padding="20,16" CornerRadius="10"
+                    Background="{StaticResource CardBgBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="最高等级汇总" FontSize="13" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding SummaryHeader}" FontSize="12" Margin="0,8,0,0"
+                               TextWrapping="Wrap"
+                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <TextBlock Text="单级成本：" FontSize="13"
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock Text="{Binding SummaryUnitCost}" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource GoldBrightBrush}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                        <TextBlock Text="综合成本：" FontSize="13"
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock Text="{Binding SummaryTotalCost}" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource GoldBrightBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Button Content="清空输入" Style="{StaticResource GhostButton}"
+                    HorizontalAlignment="Left" Margin="0,16,0,0"
+                    Command="{Binding ResetCommand}"/>
+        </StackPanel>
+    </ScrollViewer>
+</core:ToolPageBase>
