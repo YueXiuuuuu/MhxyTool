@@ -20,6 +20,7 @@ public class DustLevelRow : ObservableObject
     public string LevelText => $"{_info.Level} 级";
     public string LevelOneText => _info.LevelOneNeeded.ToString("#,##0");
     public string TotalQuantityText => _info.TotalQuantity.ToString("#,##0");
+    public string StaminaText => _info.Stamina.ToString("#,##0");
 
     private string _unitCostWanText = Placeholder;
     public string UnitCostWanText { get => _unitCostWanText; private set => SetProperty(ref _unitCostWanText, value); }
@@ -147,9 +148,11 @@ public class FiveColorDustViewModel : ObservableObject
         var level = FiveColorDustCalculator.MaxLevel;
         var needed = FiveColorDustCalculator.LevelOneNeeded(level);
         var total = FiveColorDustCalculator.TotalQuantity(level);
+        var stamina = FiveColorDustCalculator.StaminaFor(level);
 
         SummaryHeader = $"{level} 级五色灵尘：需一级灵尘 {needed.ToString("#,##0")} 个，"
-                      + $"累计 {total.ToString("#,##0")} 个（含合成过程中的全部中间等级）";
+                      + $"累计 {total.ToString("#,##0")} 个（含合成过程中的全部中间等级），"
+                      + $"体力消耗 {stamina} 点";
 
         var unitCostWan = FiveColorDustCalculator.CostWan(needed, unitPriceWan);
         var totalCostWan = FiveColorDustCalculator.CostWan(total, unitPriceWan);

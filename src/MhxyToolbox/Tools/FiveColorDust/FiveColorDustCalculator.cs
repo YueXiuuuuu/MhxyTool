@@ -4,7 +4,8 @@ namespace MhxyToolbox.Tools.FiveColorDust;
 /// <param name="Level">等级（1~10）。</param>
 /// <param name="LevelOneNeeded">合成 1 个该级灵尘需要的一级灵尘数量。</param>
 /// <param name="TotalQuantity">1 级到该级的数量累计（合成该级过程中涉及的全部灵尘数量）。</param>
-public sealed record DustLevelInfo(int Level, int LevelOneNeeded, int TotalQuantity);
+/// <param name="Stamina">合成 1 个该级灵尘消耗的体力（目标等级 × 30）。</param>
+public sealed record DustLevelInfo(int Level, int LevelOneNeeded, int TotalQuantity, int Stamina);
 
 /// <summary>
 /// 五色灵尘合成计算（纯计算，不依赖 UI）。
@@ -16,11 +17,16 @@ public sealed record DustLevelInfo(int Level, int LevelOneNeeded, int TotalQuant
 /// 因此合成 1 个 N 级所需的一级灵尘数量 Q(N) 满足：
 ///   Q(1) = 1, Q(2) = 2, Q(N) = 2 × Q(N-1) + Q(N-2)
 ///   → 1, 2, 5, 12, 29, 70, 169, 408, 985, 2378
+///
+/// 体力消耗：合成 1 个 N 级灵尘消耗的体力 = N × 30。
 /// </summary>
 public static class FiveColorDustCalculator
 {
     /// <summary>最高等级。</summary>
     public const int MaxLevel = 10;
+
+    /// <summary>体力消耗系数：合成体力 = 目标等级 × 30。</summary>
+    public const int StaminaPerLevel = 30;
 
     /// <summary>金价基准：3000 万梦幻币。</summary>
     public const decimal GoldPriceBaseCoinsWan = 3000m;
@@ -31,7 +37,7 @@ public static class FiveColorDustCalculator
     /// <summary>1~10 级的消耗信息表。</summary>
     public static IReadOnlyList<DustLevelInfo> Levels { get; } = Enumerable
         .Range(1, MaxLevel)
-        .Select(level => new DustLevelInfo(level, LevelOneCosts[level], CumulativeQuantities[level]))
+        .Select(level => new DustLevelInfo(level, LevelOneCosts[level], CumulativeQuantities[level], StaminaFor(level)))
         .ToList();
 
     /// <summary>合成 1 个 level 级灵尘所需的一级灵尘数量。</summary>
@@ -39,6 +45,9 @@ public static class FiveColorDustCalculator
 
     /// <summary>1 级到 level 级的数量累计。</summary>
     public static int TotalQuantity(int level) => CumulativeQuantities[level];
+
+    /// <summary>合成 1 个 level 级灵尘消耗的体力（目标等级 × 30）。</summary>
+    public static int StaminaFor(int level) => level * StaminaPerLevel;
 
     /// <summary>数量 × 一级灵尘单价（万）→ 成本（万）。单价为空时返回 null。</summary>
     public static decimal? CostWan(int quantity, decimal? unitPriceWan)

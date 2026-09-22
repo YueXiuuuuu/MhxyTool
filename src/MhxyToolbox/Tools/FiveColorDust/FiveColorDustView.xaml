@@ -14,8 +14,7 @@
         <Style x:Key="TableNumberText" TargetType="TextBlock">
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Right"/>
-            <Setter Property="Margin" Value="0,0,14,0"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
         </Style>
         <Style x:Key="CostText" TargetType="TextBlock" BasedOn="{StaticResource TableNumberText}">
             <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
@@ -90,6 +89,9 @@
                     <TextBlock Margin="0,6,0,0" FontSize="12" TextWrapping="Wrap"
                                Foreground="{StaticResource TextTertiaryBrush}"
                                Text="由此递推：合成 1 个 N 级所需一级灵尘数量为 1, 2, 5, 12, 29, 70, 169, 408, 985, 2378 …（Q(N) = 2×Q(N-1) + Q(N-2)）"/>
+                    <TextBlock Margin="0,6,0,0" FontSize="12" TextWrapping="Wrap"
+                               Foreground="{StaticResource TextTertiaryBrush}"
+                               Text="体力消耗：合成 1 个 N 级灵尘消耗的体力 = 目标等级 × 30（如 10 级需 300 点）。"/>
                 </StackPanel>
             </Border>
 
@@ -106,12 +108,13 @@
                                Foreground="{StaticResource TextTertiaryBrush}"
                                Text="数量无需输入即可算出；输入单价显示梦幻币成本，再输入金价显示人民币成本。"/>
 
-                    <!-- 表头：列宽必须与下方数据行一致（合计 670，适配默认窗口宽度） -->
+                    <!-- 表头：列宽必须与下方数据行一致（合计 750，适配默认窗口宽度） -->
                     <Grid Height="34" Margin="0,14,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="60"/>
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="80"/>
                             <ColumnDefinition Width="105"/>
                             <ColumnDefinition Width="105"/>
                             <ColumnDefinition Width="105"/>
@@ -120,10 +123,11 @@
                         <TextBlock Grid.Column="0" Text="等级" Style="{StaticResource TableHeaderText}"/>
                         <TextBlock Grid.Column="1" Text="需1级灵尘" Style="{StaticResource TableHeaderText}"/>
                         <TextBlock Grid.Column="2" Text="累计数量" Style="{StaticResource TableHeaderText}"/>
-                        <TextBlock Grid.Column="3" Text="单级成本(万)" Style="{StaticResource TableHeaderText}"/>
-                        <TextBlock Grid.Column="4" Text="综合成本(万)" Style="{StaticResource TableHeaderText}"/>
-                        <TextBlock Grid.Column="5" Text="单级成本(元)" Style="{StaticResource TableHeaderText}"/>
-                        <TextBlock Grid.Column="6" Text="综合成本(元)" Style="{StaticResource TableHeaderText}"/>
+                        <TextBlock Grid.Column="3" Text="体力" Style="{StaticResource TableHeaderText}"/>
+                        <TextBlock Grid.Column="4" Text="单级成本(万)" Style="{StaticResource TableHeaderText}"/>
+                        <TextBlock Grid.Column="5" Text="综合成本(万)" Style="{StaticResource TableHeaderText}"/>
+                        <TextBlock Grid.Column="6" Text="单级成本(元)" Style="{StaticResource TableHeaderText}"/>
+                        <TextBlock Grid.Column="7" Text="综合成本(元)" Style="{StaticResource TableHeaderText}"/>
                     </Grid>
                     <Border Height="1" Background="{StaticResource SeparatorBrush}"/>
 
@@ -136,6 +140,7 @@
                                         <ColumnDefinition Width="60"/>
                                         <ColumnDefinition Width="100"/>
                                         <ColumnDefinition Width="90"/>
+                                        <ColumnDefinition Width="80"/>
                                         <ColumnDefinition Width="105"/>
                                         <ColumnDefinition Width="105"/>
                                         <ColumnDefinition Width="105"/>
@@ -156,16 +161,21 @@
                                                FontWeight="SemiBold" VerticalAlignment="Center"
                                                Foreground="{StaticResource GoldBrush}"/>
                                     <TextBlock Grid.Column="1" Text="{Binding LevelOneText}"
-                                               Style="{StaticResource TableNumberText}"/>
+                                               Style="{StaticResource TableNumberText}"
+                                               Foreground="{StaticResource GoldBrush}"/>
                                     <TextBlock Grid.Column="2" Text="{Binding TotalQuantityText}"
-                                               Style="{StaticResource TableNumberText}"/>
-                                    <TextBlock Grid.Column="3" Text="{Binding UnitCostWanText}"
+                                               Style="{StaticResource TableNumberText}"
+                                               Foreground="{StaticResource GoldBrush}"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding StaminaText}"
+                                               Style="{StaticResource TableNumberText}"
+                                               Foreground="{StaticResource GoldBrush}"/>
+                                    <TextBlock Grid.Column="4" Text="{Binding UnitCostWanText}"
                                                Style="{StaticResource CostGoldText}"/>
-                                    <TextBlock Grid.Column="4" Text="{Binding TotalCostWanText}"
+                                    <TextBlock Grid.Column="5" Text="{Binding TotalCostWanText}"
                                                Style="{StaticResource CostGoldText}"/>
-                                    <TextBlock Grid.Column="5" Text="{Binding UnitCostRmbText}"
+                                    <TextBlock Grid.Column="6" Text="{Binding UnitCostRmbText}"
                                                Style="{StaticResource CostText}"/>
-                                    <TextBlock Grid.Column="6" Text="{Binding TotalCostRmbText}"
+                                    <TextBlock Grid.Column="7" Text="{Binding TotalCostRmbText}"
                                                Style="{StaticResource CostText}"/>
                                 </Grid>
                             </DataTemplate>
